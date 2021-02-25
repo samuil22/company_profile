@@ -6,19 +6,30 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
+import Loading from '../loading/Loading'
 class ClientReview extends Component {
 
 
   constructor() {
     super();
     this.state={
-      myData:[]
+      myData:[],
+      loading:true,
+      error:false
     }
   }
 
   componentDidMount(){
     RestClient.GetRequest(AppUrl.ClientReview).then(result=>{
-      this.setState({myData:result})
+      if(result==null){
+        this.setState({error:true,loading:false})
+      }else{
+        this.setState({myData:result,loading:false})
+      }
+      
+    }).catch(error=>{
+      this.setState({error:true,loading:false})
     })
   }
 
@@ -61,8 +72,10 @@ class ClientReview extends Component {
               }
             ]
           };
-
-         const myList = this.state.myData;
+          if(this.state.loading==true && this.state.error==false){
+            return <Loading />
+          }else if(this.state.loading==false && this.state.error==false){
+            const myList = this.state.myData;
          const myView = myList.map(myList=>{
             return <div>
                         <Row className="justify-content-center">
@@ -88,6 +101,10 @@ class ClientReview extends Component {
                 </Container>
             </Fragment>
         );
+          }else if(this.state.error==true){
+            return <WentWrong/>
+          }
+         
     }
 }
 

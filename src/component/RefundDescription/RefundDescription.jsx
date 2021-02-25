@@ -3,20 +3,28 @@ import {Container,Row,Col} from "react-bootstrap";
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
 import ReactHtmlParser from 'react-html-parser';
+import Loading from '../loading/Loading.jsx'
 class RefundDescription extends Component {
     constructor(){
         super();
         this.state={
-            data:""
+            data:"",
+            loading:true
         }
     }
     componentDidMount(){
         RestClient.GetRequest(AppUrl.AboutInfometion).then(result=>{
-            this.setState({data:result[0]['refund']})
+            this.setState({
+                data:result[0]['refund'],
+                loading:false
+            })
         })
     }
     render() {
-        return (
+        if(this.state.loading==true){
+            return <Loading />
+        }else{
+           return (
             <Fragment>
             <Container className="m-5">
                 <Row>
@@ -26,7 +34,9 @@ class RefundDescription extends Component {
                 </Row>
             </Container>
         </Fragment>
-        );
+        ); 
+        }
+        
     }
 }
 

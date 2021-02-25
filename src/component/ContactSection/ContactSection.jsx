@@ -5,22 +5,34 @@ import { faEnvelope,faPhone } from '@fortawesome/free-solid-svg-icons';
 import { faYoutube,faFacebook } from '@fortawesome/free-brands-svg-icons';
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
+import Loading from '../loading/Loading.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class ContactSection extends Component {
     constructor(){
         super();
         this.state={
             address:"",
             email:"",
-            phone:""  
-
+            phone:"" ,
+            loading:true,
+            error:false
         }
     }
     componentDidMount() {
         RestClient.GetRequest(AppUrl.Footer).then(result=>{
-            this.setState({address: result[0]['address'],
-            email: result[0]['email'],
-            phone: result[0]['phone'] 
-        })
+            if(result==null){
+               this.setState({loading:false,error:true})
+            }else{
+                this.setState({address: result[0]['address'],
+                email: result[0]['email'],
+                phone: result[0]['phone'] ,
+                loading:false,
+                error:true
+            }) 
+            }
+            
+        }).catch(error => {
+            this.setState({error: true,loading:false})
         })
     }
 
@@ -38,7 +50,10 @@ class ContactSection extends Component {
         })
     }
     render() {
-        return (
+        if(this.state.loading==true && this.state.error==false){
+            return <Loading />
+        }else if(this.state.loading==false ){
+            return (
             <Fragment>
                 <Container className="p-5">
                     <Row>
@@ -72,6 +87,11 @@ class ContactSection extends Component {
                 </Container>
             </Fragment>
         );
+        }
+        else if (this.state.error==true){
+            return <WentWrong/>
+        }
+        
     }
 }
 

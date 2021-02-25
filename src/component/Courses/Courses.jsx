@@ -33,7 +33,7 @@ class Courses extends Component {
                             <Col lg={6} md={6} sm={12}>
                                 <h5 className="text-justify">{myList.course_title}</h5>
                                 <p>{myList.short_desc}.</p>
-                                <Link to="/courseDetails">Details</Link>
+                                <Link to={"/courseDetails/"+myList.id}>Details</Link>
                             </Col>
                         </Row>
                     </Col>

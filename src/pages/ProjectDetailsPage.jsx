@@ -4,6 +4,19 @@ import PageTop from '../component/PageTop/PageTop.jsx'
 import ProjectDetails from '../component/ProjectDetails/ProjectDetails.jsx'
 import Footer from '../component/Footer/Footer.jsx'
 class ProjectDetailsPage extends Component {
+
+
+constructor({match}) {
+        super();
+        this.state={
+            projectPassedID:match.params.projectID,
+            projectPassedName:match.params.projectName
+        }
+    }
+
+
+
+
     componentDidMount() {
         window.scroll(0,0)
     }
@@ -11,8 +24,8 @@ class ProjectDetailsPage extends Component {
         return (
             <Fragment>
                 <TopNavigation title="project details"/>
-                <PageTop pagetitle="Projects details page"/>
-                <ProjectDetails />
+                <PageTop pagetitle={this.state.projectPassedName}/>
+                <ProjectDetails id={this.state.projectPassedID}/>
                 <Footer/>
             </Fragment>
         );

@@ -6,8 +6,46 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import  "video-react/dist/video-react.css";
 import {Player,BigPlayButton  } from "video-react"
+import ReactHtmlParser from 'react-html-parser';
+import RestClient from '../../RestAPI/RestClient.jsx'
+import AppUrl from '../../RestAPI/AppUrl.jsx'
 class CourseDetails extends Component {
+
+    constructor(props) {
+        super();
+        this.state={
+            coursePassID:props.id,
+             course_title:"",
+             long_title:"",
+             long_dec:"",
+             total_lecture:"",
+             total_student:"",
+             skill_all:"",
+             video_url:"",
+             course_link:""
+        }
+    }
+
+    componentDidMount() {
+        RestClient.GetRequest(AppUrl.CourseDetails+this.state.coursePassID).then(result => {
+            this.setState({
+                courseData:result,
+                long_title:result[0]['long_title'],
+            course_title:result[0]['course_title'],
+            long_dec:result[0]['long_dec'],
+            total_lecture:result[0]['total_lecture'],
+            total_student:result[0]['total_student'],
+            skill_all:result[0]['skill_all'],
+            video_url:result[0]['video_url'],
+            course_link:result[0]['course_link'],
+
+            })
+        }).catch(error => {
+
+        })
+    }
     render() {
+
         return (
 
             <Fragment>
@@ -16,12 +54,14 @@ class CourseDetails extends Component {
                         <Container className="topPageContent text-white">
                             <Row>
                                 <Col lg={6} md={6} sm={12}>
-                                    <h3>Full Dynamic Website With Admin Panel</h3>
-                                    <p className="mb-0 goldenFont">Total Student = 30</p>
-                                    <p className="goldenFont">Total video = 30</p>
+                                    
+                                    <h3>{this.state.long_title}</h3>
+                                    <p className="mb-0 goldenFont">Total Student = {this.state.total_student}</p>
+                                    <p className="goldenFont">Total video = {this.state.total_lecture}</p>
                                 </Col>
                                 <Col lg={6} md={6} sm={12}> 
-                                    <p>Unlimited Dynamic Product CategoryUnlimited Dynamic Product CategoryUnlimited Dynamic Product CategoryUnlimited Dynamic Product CategoryUnlimited Dynamic Product CategoryUnlimited Dynamic Product Category</p>
+                                    <h5>{this.state.long_dec}</h5>
+                                    
                                 </Col>
                             </Row>
                         </Container>
@@ -31,8 +71,9 @@ class CourseDetails extends Component {
                 <Container className="p-5 mt-5"> 
                     <Row> 
                         <Col lg={6} md={6} sm={12} className="p-2 pt-5">
+                            <h1>{this.state.long_title}</h1>
                             <h5 className="serviceName">Skill You Get</h5>
-                              <ul className="serviceDetailsUl">
+                              {/* <ul className="serviceDetailsUl">
                                 <li><FontAwesomeIcon className="iconBullet" icon={faCheckCircle} /> Unlimited Dynamic Product Category</li>
                                 <li><FontAwesomeIcon className="iconBullet" icon={faCheckCircle} /> Unlimited Dynamic Product Category</li>
                                 <li><FontAwesomeIcon className="iconBullet" icon={faCheckCircle} /> Unlimited Dynamic Product Category</li>
@@ -40,14 +81,15 @@ class CourseDetails extends Component {
                                 <li><FontAwesomeIcon className="iconBullet" icon={faCheckCircle} /> Unlimited Dynamic Product Category</li>
                                 <li><FontAwesomeIcon className="iconBullet" icon={faCheckCircle} /> Unlimited Dynamic Product Category</li>
                                 <li><FontAwesomeIcon className="iconBullet" icon={faCheckCircle} /> Unlimited Dynamic Product Category</li>
-                            </ul>
-                            <Button varient="primary"><Link className="linkStyle" href=" ">Go to Website</Link></Button>
+                            </ul> */}
+                            {ReactHtmlParser(this.state.skill_all)}
+                            <Button target="_blank" href={"//"+this.state.course_link} varient="primary"> Go to Website </Button>
                         </Col>
                         <Col lg={6} md={6} sm={12} className="pt-5">
                             <Player
                                 
                                 poster="../../asset/img/java.png"
-                                src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+                                src={this.state.video_url}
                                 >
                                 <BigPlayButton position="center" />
                             </Player> 

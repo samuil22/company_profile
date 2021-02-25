@@ -12,7 +12,7 @@ class Services extends Component {
     }
 
     componentDidMount(){
-        RestClient.GetRequest(AppUrl.Serveices).then(result=>{
+        RestClient.GetRequest(AppUrl.Serveices3).then(result=>{
              this.setState({myData:result})
     })
 }

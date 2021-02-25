@@ -5,23 +5,38 @@ import CourseImg2 from '../../asset/img/java.png';
 import {Link} from "react-router-dom";
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
+import Loading from '../loading/Loading.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class AllCourses extends Component {
 
     constructor() {
         super();
         this.state={
-            myData:[]
+            myData:[],
+            loading:true,
+            error:false
         }
     }
     componentDidMount() {
         RestClient.GetRequest(AppUrl.CourseAll).then(result=>{
-            this.setState({myData:result})
+            if(result==null){
+                 this.setState({error:true,loading:false})
+            }else{
+                this.setState({myData:result,loading:false})
+            }
+            
+        }).catch(error=>{
+            this.setState({error:true,loading:false})
         })
     }
 
     render() {
-        const myList = this.state.myData;
-        const myView = myList.map(myList=>{
+        if(this.state.loading==true && this.state.error==false){
+            return <Loading />
+        }
+        else if (this.state.loading==false && this.state.error==false){
+            const myList = this.state.myData;
+            const myView = myList.map(myList=>{
             return <Col  lg={6} md={12} sm={12}>
                         <Row className="p-2">
                             <Col lg={6} md={6} sm={12}>
@@ -30,7 +45,7 @@ class AllCourses extends Component {
                             <Col lg={6} md={6} sm={12}>
                                 <h5 className="text-justify">{myList.course_title}</h5>
                                 <p>{myList.short_desc}.</p>
-                                <Link to="/courseDetails">Details</Link>
+                                <Link to={"/courseDetails/"+myList.id}>Details</Link>
                             </Col>
                         </Row>
                     </Col>
@@ -42,12 +57,15 @@ class AllCourses extends Component {
                 <Container className="pt-5">
                     <Row>
                          
-                         {myView}
-                       
+                         {myView} 
                     </Row> 
                 </Container>
             </Fragment>
         );
+    }else if(this.state.error==true){
+        return <WentWrong/>
+    }
+  
     }
 }
 
