@@ -37,7 +37,7 @@ class AboutDescription extends Component {
         }else if(this.state.loading==false && this.state.error==false){
             return (
             <Fragment>
-                <Container className="m-5">
+                <Container className="p-5">
                     <Row>
                         <Col sm={12} lg={12} md={12}>
                             {ReactHtmlParser(this.state.data)}

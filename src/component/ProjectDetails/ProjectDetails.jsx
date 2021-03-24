@@ -5,6 +5,8 @@ import {Link} from 'react-router-dom'
 import ReactHtmlParser from 'react-html-parser';
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
+import Loading from '../loading/Loading.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class ProjectDetails extends Component {
 
 
@@ -17,25 +19,40 @@ class ProjectDetails extends Component {
             project_feature:"",
             project_url_live:"",
             project_imgtwo:"",
-            project_name:""
+            project_name:"",
+            loading:true,
+            error:false
         }
     }
 
     componentDidMount(){
         RestClient.GetRequest(AppUrl.ProjectDetails+this.state.MyProjectID).then(result=>{
-            this.setState({
+            if(result==null){
+                this.setState({error:true,loading:false});
+            }else{
+                this.setState({
                 project_imgtwo:result[0]['project_imgtwo'],
                 project_feature:result[0]['project_feature'],
                 project_url:result[0]['project_url_live'],
                 project_short:result[0]['project_short_description'],
-                project_name:result[0]['project_name']
+                project_name:result[0]['project_name'],
+                loading:false
             })
+            }
+            
 
-        }).catch(err=>{})
+        }).catch(err=>{
+            this.setState({error:true,loading:false})
+        })
     }
 
     render() {
-        return (
+
+        if(this.state.loading==true && this.state.error==false){
+            return <Loading />
+        }
+        else if(this.state.loading==false && this.state.error==false){
+            return (
             <Fragment>
                 <Container> 
                     <Row>
@@ -55,6 +72,11 @@ class ProjectDetails extends Component {
                 </Container>
             </Fragment>
         );
+        }
+        else if(this.state.error==true){
+            return <WentWrong/>
+        }
+        
     }
 }
 

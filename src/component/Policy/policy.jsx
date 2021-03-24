@@ -3,7 +3,8 @@ import {Container,Row,Col} from 'react-bootstrap';
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
 import ReactHtmlParser from 'react-html-parser';
-import Loading from '../loading/Loading.jsx'
+import Loading from '../loading/Loading.jsx';
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class policy extends Component {
 
 
@@ -11,22 +12,30 @@ class policy extends Component {
         super();
         this.state={
             data:"",
-            loading:true
+            loading:true,
+            error:false
         }
     }
     componentDidMount(){
         RestClient.GetRequest(AppUrl.AboutInfometion).then(result=>{
-            this.setState({
+            if(result==null){
+                this.setState({error:true,loading:false})
+            }else{
+                this.setState({
                 data:result[0]['privacy'],
                 loading:false
             })
+            }
+            
+        }).catch(error=>{
+            this.setState({error:true,loading:false})
         })
     }
 
     render() {
-        if(this.state.loading==true){
+        if(this.state.loading==true && this.state.error==false){
             return <Loading />
-        }else{
+        }else if(this.state.loading==false && this.state.error==false){
             return (
             <Container className="m-5">
                 <Row>
@@ -37,7 +46,9 @@ class policy extends Component {
             </Container>
         );
         }
-        
+        else if(this.state.error==true){
+            return <WentWrong/>
+        }
     }
 }
 

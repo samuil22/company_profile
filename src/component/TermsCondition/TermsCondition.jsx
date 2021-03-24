@@ -4,29 +4,36 @@ import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
 import ReactHtmlParser from 'react-html-parser';
 import Loading from '../loading/Loading.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class TermsCondition extends Component {
 
     constructor() {
         super();
         this.state={
             data:"",
-            loading:true
+            loading:true,
+            error:false,
         }
     }
 
     componentDidMount() {
         RestClient.GetRequest(AppUrl.AboutInfometion).then(result=>{
-            this.setState({
+            if(result==null){
+                this.setState({error:true,loading:false})
+            }else{
+                this.setState({
                 data:result[0]['terms'],
                 loading:false
             })
+            }
+            
         })
     }
     render() {
-        if(this.state.loading==true){
+        if(this.state.loading==true && this.state.error==false){
             return <Loading />
         }
-        else{
+        else if(this.state.loading==false && this.state.error==false){
             return (
             <Fragment>
                 <Container className="m-5">
@@ -38,6 +45,9 @@ class TermsCondition extends Component {
                 </Container>
             </Fragment>
         );
+        }
+        else if(this.state.error==true){
+            return <WentWrong/>
         }
         
     }

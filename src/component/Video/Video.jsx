@@ -6,21 +6,30 @@ import  "video-react/dist/video-react.css";
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
 import {Player,BigPlayButton  } from "video-react"
-
+import Loading from '../loading/Loading.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class Video extends Component {
 
     state={
         show: false,
         video_description: "",
         video_url: "",
+        loading:true,
+        error:false
 
     }
 
     componentDidMount() {
         RestClient.GetRequest(AppUrl.VideoHome).then(result=>{
-            this.setState({video_url:result[0]['video_url'],
-            video_description:result[0]['video_description']
+            if(result==null){
+                this.setState({error:true,loading:false})
+            }else{
+                this.setState({video_url:result[0]['video_url'],
+            video_description:result[0]['video_description'],
+            loading:false
         })
+            }
+            
         })
     }
 
@@ -30,7 +39,10 @@ class Video extends Component {
     modalOpen=()=>this.setState({show: true});
 
     render() {
-        return (
+        if(this.state.loading==true && this.state.error==false){
+            return <Loading/>
+        }else if(this.state.loading==false && this.state.error==false){
+return (
             <Fragment>
                 <Container>
                     <Row>
@@ -62,6 +74,10 @@ class Video extends Component {
                 </Modal>
             </Fragment>
         );
+        }
+        else if(this.state.error==true){
+            return <WentWrong/>
+        }
     }
 }
 

@@ -8,7 +8,8 @@ class wentWrong extends Component {
                 <Container className="text-center">
                     <Row>
                         <Col>
-                            <img className="img-fluid" src={WrongIcon}/>
+                            {/* <img className="img-fluid" src={WrongIcon}/> */}
+                            <h1>Data Not Found</h1>
                         </Col>
                     </Row>
                 </Container>

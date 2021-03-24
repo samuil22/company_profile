@@ -4,25 +4,38 @@ import ProImage from  '../../asset/img/projectOne.png'
 import RestClient from '../../RestAPI/RestClient.jsx'
 import AppUrl from '../../RestAPI/AppUrl.jsx'
 import {Link} from "react-router-dom";
+import Loading from '../loading/Loading.jsx'
+import WentWrong from '../wentWrong/wentWrong.jsx'
 class RecentProjects extends Component {
 
 
     constructor(){
         super();
         this.state={
-            myData:[]
+            myData:[],
+            error:false,
+            loading:true
         }
     }
 
 
     componentDidMount(){
         RestClient.GetRequest(AppUrl.Project3).then(result=>{
-            this.setState({myData:result})
+            if(result==null){
+                this.setState({error:true,loading:false});
+            }else{
+                this.setState({myData:result,loading:false})
+            }
+        }).catch(error=>{
+            this.setState({error:true,loading:false})
         })
     }
 
     render() {
-        const myList= this.state.myData;
+        if(this.state.loading==true && this.state.error==false){
+            return <Loading />
+        }else if(this.state.loading==false && this.state.error==false){
+            const myList= this.state.myData;
         const myView = myList.map(myList=>{
             return <Col lg={4} md={4} sm={12} className="p-2">
                         <Card >
@@ -51,6 +64,10 @@ class RecentProjects extends Component {
             </Fragment>
        
        );
+        }
+        else if(this.state.error==true){
+           return  <WentWrong/>
+        }
     }
 }
 

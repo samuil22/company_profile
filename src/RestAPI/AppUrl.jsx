@@ -1,6 +1,6 @@
 class AppUrl{
 
-    static BaseUrl= 'http://127.0.0.1:8000/';
+    static BaseUrl= 'http://companyapi.atworld24.com/';
 
     static HomeTop= this.BaseUrl+'/HomeTop';
     static TechDesc= this.BaseUrl+'/TechDesc';
